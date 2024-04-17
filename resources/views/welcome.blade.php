@@ -1,23 +1,19 @@
-<!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>Amigo Secreto</title>
-        @vite(['resources/sass/app.scss', 'resources/js/app.js'])
-    </head>
-    <body class="antialiased">
-        <ul class="nav nav-pills nav-fill gap-2 p-1 small bg-primary rounded-5 shadow-sm" id="pillNav2" role="tablist" style="--bs-nav-link-color: var(--bs-white); --bs-nav-pills-link-active-color: var(--bs-primary); --bs-nav-pills-link-active-bg: var(--bs-white);">
-            <li class="nav-item" role="presentation">
-                <button class="nav-link active rounded-5" id="home-tab2" data-bs-toggle="tab" type="button" role="tab" aria-selected="true">Home</button>
-            </li>
-            <li class="nav-item" role="presentation">
-                <button class="nav-link rounded-5" id="profile-tab2" data-bs-toggle="tab" type="button" role="tab" aria-selected="false">Profile</button>
-            </li>
-            <li class="nav-item" role="presentation">
-                <button class="nav-link rounded-5" id="contact-tab2" data-bs-toggle="tab" type="button" role="tab" aria-selected="false">Contact</button>
-            </li>
-        </ul>
-    </body>
-</html>
+@extends('layouts.app')
+@section('content')
 
+<div>
+    <h4>Seja bem vindo(a) ao aplicativo de organizar amigo secreto!</h4>
+    <br>
+    <p><b>Aqui você poderá:</b></p>
+    <ul class="list-group">
+        <li class="list-group-item"><i class="bi bi-check-square-fill text-success"></i> Organizar um ou mais eventos de amigo secreto</li>
+        <li class="list-group-item"><i class="bi bi-check-square-fill text-success"></i> Participar de um amigo secreto</li>
+        <li class="list-group-item"><i class="bi bi-check-square-fill text-success"></i> Visualizar os amigos secretos que você está participando</li>
+        <li class="list-group-item"><i class="bi bi-check-square-fill text-success"></i> Cadastrar participantes de um amigo secreto</li>
+        <li class="list-group-item"><i class="bi bi-check-square-fill text-success"></i> Realizar sorteio de amigo secreto</li>
+    </ul>
+    <hr>
+    <button type="button" class="btn btn-primary btn-lg" onclick="execute()">Começar</button>
+</div>
+
+@endsection
