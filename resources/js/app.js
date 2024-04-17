@@ -1,7 +1,4 @@
 import './bootstrap';
+import execute from './test';
 
-import Alpine from 'alpinejs';
-
-window.Alpine = Alpine;
-
-Alpine.start();
+execute();

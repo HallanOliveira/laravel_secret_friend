@@ -15,7 +15,7 @@ use App\Http\Controllers\IndexController;
 |
 */
 
-Route::get('/teste', [IndexController::class, 'home'])->name('home');
+Route::get('/', [IndexController::class, 'home'])->name('home');
 
 Route::get('/dashboard', function () {
     return view('dashboard');
