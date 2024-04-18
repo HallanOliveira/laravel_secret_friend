@@ -13,7 +13,7 @@
         <li class="list-group-item"><i class="bi bi-check-square-fill text-success"></i> Realizar sorteio de amigo secreto</li>
     </ul>
     <hr>
-    <button type="button" class="btn btn-primary btn-lg" onclick="execute()">Começar</button>
+    <button type="button" class="btn btn-primary btn-lg" id="start-welcome">Começar</button>
 </div>
 
 @endsection
