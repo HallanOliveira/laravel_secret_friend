@@ -17,7 +17,8 @@ use Illuminate\Support\Facades\Auth;
 |
 */
 
-Route::get('/', [IndexController::class, 'home'])->name('home');
+Route::get('/', [IndexController::class, 'welcome'])->name('welcome');
+Route::get('/home', [IndexController::class, 'home'])->name('home');
 
 Route::get('/dashboard', function () {
     return view('dashboard');
