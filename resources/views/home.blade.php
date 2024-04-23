@@ -41,7 +41,7 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <form >
+        <form id="create-secret-group-form" action="/secretFriendGroups" method="POST">
             <div class="mb-3">
                 <label for="exampleFormControlInput1" class="form-label">Nome do grupo</label>
                 <input type="text" maxlength="100" class="form-control" id="secret-group-name" placeholder="Nome do grupo de amigo secreto">
@@ -59,3 +59,7 @@
   </div>
 </div>
 @endsection
+
+@push('scripts')
+@vite(['resources/js/home/script.js'])
+@endpush

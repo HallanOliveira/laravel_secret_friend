@@ -3,7 +3,6 @@
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\IndexController;
-use App\Http\Controllers\HomeController;
 use App\Http\Controllers\SecretFriendGroupController;
 use Illuminate\Support\Facades\Auth;
 
@@ -23,12 +22,11 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-    Route::get('/home', [IndexController::class, 'home'])->name('home');
+    Route::get('/home', [SecretFriendGroupController::class, 'index'])->name('home');
 
     Route::resource('secretFriendGroups', SecretFriendGroupController::class);
 
 });
-
 
 Route::get('/', [IndexController::class, 'welcome'])->name('welcome');
 

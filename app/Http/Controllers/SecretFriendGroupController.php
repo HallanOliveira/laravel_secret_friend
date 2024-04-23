@@ -14,9 +14,13 @@ class SecretFriendGroupController extends Controller
     {
     }
 
-    public function index()
-    {
-        return view('home');
+    public function index() {
+        return view('home', [
+            'secretFriends' => [
+                '10/12/2023: Revenda Mais',
+                '25/12/2023: Familia Oliveira'
+            ]
+        ]);
     }
 
     public function store(CreateSecretFriendRequest $request)
