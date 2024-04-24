@@ -2,13 +2,16 @@
 
 namespace App\Core\Contracts;
 
+use App\Core\Contracts\DTO;
 interface Repository
 {
-    public function create(object $payload): bool;
+    public function create(DTO $data): bool;
 
-    public function update(int $id, object $payload): bool;
+    public function update(int $id, DTO $data): bool;
 
     public function view(int $id): bool;
 
     public function delete(int $id): bool;
+
+    public function getAll(array $filters): array;
 }

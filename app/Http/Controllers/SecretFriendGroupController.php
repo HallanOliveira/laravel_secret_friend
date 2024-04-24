@@ -3,23 +3,30 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Http\Controllers\AppBaseController;
 use App\Core\Services\SecretFriendGroup\CreateSecretFriendGroupService;
-use App\Core\DTO\SecretFriendGroup\CreateSecretFriendGroupDTO;
+use App\Core\Services\SecretFriendGroup\ListSecretFriendGroupService;
+use App\Core\DTO\SecretFriendGroup\InputSecretFriendGroupDTO;
 use App\Repositories\SecretFriendGroupRepository;
 use App\Http\Requests\CreateSecretFriendRequest;
+use Exception;
 
-class SecretFriendGroupController extends Controller
+class SecretFriendGroupController extends AppBaseController
 {
-    public function __construct(protected SecretFriendGroupRepository $repository)
-    {
-    }
+    public function __construct(
+        protected readonly SecretFriendGroupRepository $secretFriendGroupRepository
+    ) {}
 
-    public function index() {
+    public function index(Request $request) {
+        try {
+            $filters             = $request->all();
+            $service             = new ListSecretFriendGroupService($filters, $this->secretFriendGroupRepository);
+            $secretFriendsGroups = $service->execute();
+        } catch (Exception $e) {
+            $this->setFlashMessage($e->getMessage(), 'danger');
+        }
         return view('home', [
-            'secretFriends' => [
-                '10/12/2023: Revenda Mais',
-                '25/12/2023: Familia Oliveira'
-            ]
+            'secretFriendsGroups' => $secretFriendsGroups ?? []
         ]);
     }
 
@@ -29,13 +36,13 @@ class SecretFriendGroupController extends Controller
             $request->validated();
             $payload             = $request->validated();
             $payload['owner_id'] = auth()->id();
-            $dto                 = new CreateSecretFriendGroupDTO($payload);
-            $service             = new CreateSecretFriendGroupService($dto, $this->repository);
+            $dto                 = InputSecretFriendGroupDTO::create($payload);
+            $service             = new CreateSecretFriendGroupService($dto, $this->secretFriendGroupRepository);
             $service->execute();
         } catch (\Exception $e) {
-            return back()->withErrors($e->getMessage());
+            return $this->redirectWithError($e->getMessage(), 'secretFriendGroups.index');
         }
-        return redirect()->route('secretFriendGroups.index');
+        return $this->redirectWithSuccess('Grupo criado com sucesso!', 'secretFriendGroups.index');
     }
 
     public function show($id)

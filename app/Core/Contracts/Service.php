@@ -4,5 +4,5 @@ namespace App\Core\Contracts;
 
 interface Service
 {
-    public function execute(): bool;
+    public function execute();
 }

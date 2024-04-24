@@ -1,10 +1,10 @@
 import Swal from 'sweetalert2'
 
 function createSecretGroup() {
-    if (validateForm()) {
+    // if (validateForm()) {
         $('#create-secret-group-form').submit();
         return;
-    }
+    // }
 
     Swal.fire({
         icon: 'warning',

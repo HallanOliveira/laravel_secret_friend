@@ -4,18 +4,19 @@ namespace App\Core\Services\SecretFriendGroup;
 
 use App\Core\Contracts\Service;
 use App\Core\Contracts\Repository;
-use App\Core\DTO\SecretFriendGroup\CreateSecretFriendGroupDTO;
-
+use App\Core\Contracts\DTO;
 class CreateSecretFriendGroupService implements Service
 {
     public function __construct(
-        protected CreateSecretFriendGroupDTO $secretFriendGroupDTO,
-        protected Repository                 $repository
+        protected DTO        $dto,
+        protected Repository $repository
     ) {
     }
 
-    public function execute(): bool
+    public function execute(): void
     {
-        return $this->repository->create($this->secretFriendGroupDTO);
+        if (! $this->repository->create($this->dto)) {
+            throw new \Exception('Ocorreu um erro ao o criar grupo de amigo secreto');
+        }
     }
 }
