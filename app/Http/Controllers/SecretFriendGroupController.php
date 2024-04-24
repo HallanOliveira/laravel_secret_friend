@@ -25,7 +25,7 @@ class SecretFriendGroupController extends AppBaseController
         } catch (Exception $e) {
             $this->setFlashMessage($e->getMessage(), 'danger');
         }
-        return view('home', [
+        return view('secretFriendGroup/index', [
             'secretFriendsGroups' => $secretFriendsGroups ?? []
         ]);
     }
@@ -58,5 +58,10 @@ class SecretFriendGroupController extends AppBaseController
     public function destroy($id)
     {
         return false;
+    }
+
+    public function create()
+    {
+        return view('secretFriendGroup/create_form');
     }
 }

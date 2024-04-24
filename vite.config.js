@@ -11,12 +11,25 @@ export default defineConfig({
     plugins: [
         laravel({
             input: [
-                'resources/sass/app.scss',
                 'resources/js/app.js',
-                'resources/js/home/script.js',
+                'resources/sass/app.scss',
+                'resources/js/secretFriendGroup/script.js',
             ],
             refresh: true,
         }),
+        {
+            name: 'jquery',
+            resolveId(id) {
+                if (id === '$' || id === 'jquery') {
+                    return id;
+                }
+            },
+            load(id) {
+                if (id === '$' || id === 'jquery') {
+                    return 'export default window.jQuery;';
+                }
+            }
+        }
     ],
     resolve: {
         alias: {
