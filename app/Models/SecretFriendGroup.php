@@ -21,4 +21,14 @@ class SecretFriendGroup extends Model
         'owner_id',
         'reveal_date'
     ];
+
+    protected $hidden = [
+        'updated_at',
+        'deleted_at'
+    ];
+
+    public function owner()
+    {
+        return $this->belongsTo(User::class, 'owner_id');
+    }
 }

@@ -7,7 +7,7 @@ interface Repository
 {
     public function create(DTO $data): bool;
 
-    public function update(int $id, DTO $data): bool;
+    public function update(DTO $data): bool;
 
     public function view(int $id): bool;
 

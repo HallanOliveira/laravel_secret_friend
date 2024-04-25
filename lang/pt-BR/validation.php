@@ -208,12 +208,17 @@ return [
         'year'      => 'ano',
         'description' => 'descrição',
         'password_confirmation' => 'confirmação da senha',
-        'current_password' => 'senha atual',
-        'complement' => 'complemento',
-        'modality' => 'modalidade',
-        'category' => 'categoria',
-        'blood_type' => 'tipo sanguíneo',
-        'birth_date' => 'data de nascimento'
+        'current_password'      => 'senha atual',
+        'complement'            => 'complemento',
+        'modality'              => 'modalidade',
+        'category'              => 'categoria',
+        'blood_type'            => 'tipo sanguíneo',
+        'birth_date'            => 'data de nascimento',
+        'created_at'            => 'Data de criação',
+        'created_by'            => 'Criado por',
+        'id'                    => 'ID',
+        'reveal_date'           => 'Data de revelação',
+        'owner_id'              => 'Criado por',
     ],
 
 ];

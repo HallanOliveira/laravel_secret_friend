@@ -2,20 +2,25 @@
 
 namespace App\Http\Controllers;
 
+use Exception;
 use Illuminate\Http\Request;
+use App\Models\SecretFriendGroup;
 use App\Http\Controllers\AppBaseController;
+use App\Http\Requests\SecretFriendGroup\CreateSecretFriendRequest;
+use App\Http\Requests\SecretFriendGroup\UpdateSecretFriendRequest;
+use App\Repositories\SecretFriendGroupRepository;
 use App\Core\Services\SecretFriendGroup\CreateSecretFriendGroupService;
+use App\Core\Services\SecretFriendGroup\UpdateSecretFriendGroupService;
 use App\Core\Services\SecretFriendGroup\ListSecretFriendGroupService;
 use App\Core\DTO\SecretFriendGroup\InputSecretFriendGroupDTO;
-use App\Repositories\SecretFriendGroupRepository;
-use App\Http\Requests\CreateSecretFriendRequest;
-use Exception;
+use App\Core\DTO\SecretFriendGroup\OutputSecretFriendGroupDTO;
 
 class SecretFriendGroupController extends AppBaseController
 {
     public function __construct(
         protected readonly SecretFriendGroupRepository $secretFriendGroupRepository
-    ) {}
+    ) {
+    }
 
     public function index(Request $request) {
         try {
@@ -33,11 +38,11 @@ class SecretFriendGroupController extends AppBaseController
     public function store(CreateSecretFriendRequest $request)
     {
         try {
-            $request->validated();
-            $payload             = $request->validated();
-            $payload['owner_id'] = auth()->id();
-            $dto                 = InputSecretFriendGroupDTO::create($payload);
-            $service             = new CreateSecretFriendGroupService($dto, $this->secretFriendGroupRepository);
+            $payload               = $request->validated();
+            $payload['owner_id']   = auth()->id();
+            $payload['created_by'] = auth()->id();
+            $dto                   = InputSecretFriendGroupDTO::create($payload);
+            $service               = new CreateSecretFriendGroupService($dto, $this->secretFriendGroupRepository);
             $service->execute();
         } catch (\Exception $e) {
             return $this->redirectWithError($e->getMessage(), 'secretFriendGroups.index');
@@ -45,23 +50,59 @@ class SecretFriendGroupController extends AppBaseController
         return $this->redirectWithSuccess('Grupo criado com sucesso!', 'secretFriendGroups.index');
     }
 
-    public function show($id)
+    public function show(SecretFriendGroup $secretFriendGroup)
     {
-        return false;
+        try {
+            return view('secretFriendGroup/show', [
+                'secretFriendGroup' => $secretFriendGroup
+            ]);
+        } catch (Exception $e) {
+            return $this->redirectWithError($e->getMessage(), 'secretFriendGroups.index');
+        }
+
     }
 
-    public function update($id)
+    public function update(UpdateSecretFriendRequest $request, SecretFriendGroup $secretFriendGroup)
     {
-        return false;
+        try {
+            $payload = $request->validated();
+            $dto     = InputSecretFriendGroupDTO::create($payload + $secretFriendGroup->toArray());
+            $service = new UpdateSecretFriendGroupService($dto, $this->secretFriendGroupRepository);
+            $service->execute();
+        } catch(Exception $e) {
+            return $this->redirectWithError($e->getMessage(), 'secretFriendGroups.index');
+        }
+        return $this->redirectWithSuccess('Grupo atualizado com sucesso!', 'secretFriendGroups.index');
     }
 
-    public function destroy($id)
+    public function destroy(SecretFriendGroup $secretFriendGroup)
     {
-        return false;
+        try {
+            $secretFriendGroup->delete();
+        } catch (Exception $e) {
+            $this->setFlashMessage($e->getMessage(), 'danger');
+        }
+        $this->setFlashMessage('Grupo deletado com sucesso!', 'success');
     }
 
-    public function create()
+    public function formCreate()
     {
-        return view('secretFriendGroup/create_form');
+        try {
+            return view('secretFriendGroup/form_create');
+        } catch (Exception $e) {
+            return $this->redirectWithError($e->getMessage(), 'secretFriendGroups.index');
+        }
+    }
+
+    public function formUpdate(SecretFriendGroup $secretFriendGroup)
+    {
+        try {
+            $dto = OutputSecretFriendGroupDTO::create($secretFriendGroup->toArray());
+        } catch (Exception $e) {
+            return $this->redirectWithError($e->getMessage(), 'secretFriendGroups.index');
+        }
+        return view('secretFriendGroup/form_update', [
+            'secretFriendGroup' => $dto
+        ]);
     }
 }

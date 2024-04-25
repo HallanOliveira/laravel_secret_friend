@@ -19,9 +19,11 @@ class SecretFriendGroupRepository implements Repository
         return $this->model->save();
     }
 
-    public function update(int $id, DTO $data): bool
+    public function update(DTO $data): bool
     {
-        return true;
+        $this->model = $this->model->find($data->id);
+        $this->model->fill($data->toArray());
+        return $this->model->save();
     }
 
     public function view(int $id): bool
@@ -36,7 +38,9 @@ class SecretFriendGroupRepository implements Repository
 
     public function getAll(array $filters): array
     {
-        $data = $this->model->all();
+        $data = $this->model
+            ->where('owner_id', auth()->id())
+            ->get();
         return $data->toArray();
     }
 }

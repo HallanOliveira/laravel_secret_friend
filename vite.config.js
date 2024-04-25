@@ -17,23 +17,11 @@ export default defineConfig({
             ],
             refresh: true,
         }),
-        {
-            name: 'jquery',
-            resolveId(id) {
-                if (id === '$' || id === 'jquery') {
-                    return id;
-                }
-            },
-            load(id) {
-                if (id === '$' || id === 'jquery') {
-                    return 'export default window.jQuery;';
-                }
-            }
-        }
     ],
     resolve: {
         alias: {
             '~bootstrap': path.resolve(__dirname, 'node_modules/bootstrap-icons'),
+            '$': 'jQuery'
         }
     },
 });

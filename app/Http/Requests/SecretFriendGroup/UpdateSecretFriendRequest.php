@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\SecretFriendGroup;
 
 use App\Models\SecretFriendGroup;
 use Illuminate\Foundation\Http\FormRequest;
 
-class CreateSecretFriendRequest extends FormRequest
+class UpdateSecretFriendRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
