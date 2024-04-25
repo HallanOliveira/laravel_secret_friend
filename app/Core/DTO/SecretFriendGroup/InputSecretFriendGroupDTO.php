@@ -11,7 +11,6 @@ class InputSecretFriendGroupDTO implements DTO
     public readonly string $reveal_date;
     public readonly int    $owner_id;
 
-
     public static function create(array $values): self
     {
         $dto = new self();

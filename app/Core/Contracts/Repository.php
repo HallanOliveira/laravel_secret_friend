@@ -5,9 +5,9 @@ namespace App\Core\Contracts;
 use App\Core\Contracts\DTO;
 interface Repository
 {
-    public function create(DTO $data): bool;
+    public function create(DTO $data): DTO;
 
-    public function update(DTO $data): bool;
+    public function update(DTO $data): DTO;
 
     public function view(int $id): bool;
 

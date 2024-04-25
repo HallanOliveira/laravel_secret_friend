@@ -13,10 +13,12 @@ class CreateSecretFriendGroupService implements Service
     ) {
     }
 
-    public function execute(): void
+    public function execute(): DTO
     {
-        if (! $this->repository->create($this->dto)) {
-            throw new \Exception('Ocorreu um erro ao o criar grupo de amigo secreto');
+        $dto = $this->repository->create($this->dto);
+        if ($dto instanceof DTO) {
+            return $dto;
         }
+        throw new \Exception('Erro ao criar grupo de amigo secreto.');
     }
 }

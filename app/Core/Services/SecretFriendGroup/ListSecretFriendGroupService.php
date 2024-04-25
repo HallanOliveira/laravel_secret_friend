@@ -15,6 +15,6 @@ class ListSecretFriendGroupService implements Service
 
     public function execute(): array
     {
-        return $this->repository->getAll($this->filters);;
+        return $this->repository->getAll($this->filters);
     }
 }

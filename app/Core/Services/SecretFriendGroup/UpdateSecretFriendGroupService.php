@@ -14,10 +14,12 @@ class UpdateSecretFriendGroupService implements Service
     ) {
     }
 
-    public function execute(): void
+    public function execute(): DTO
     {
-        if (! $this->repository->update($this->dto)) {
-            throw new \Exception('Ocorreu um erro ao o criar grupo de amigo secreto');
+        $dto = $this->repository->update($this->dto);
+        if ($dto instanceof DTO) {
+            return $dto;
         }
+        throw new \Exception('Erro ao atualizar grupo de amigo secreto.');
     }
 }

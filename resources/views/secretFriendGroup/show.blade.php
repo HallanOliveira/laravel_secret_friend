@@ -26,7 +26,7 @@
                     @else
                         <div class="mb-3">
                             <label for="{{$key}}" class="form-label">{{__('validation.attributes.'.$key)}}</label>
-                            <input type="text" class="form-control" readonly="readonly" name="{{$key}}" id="{{$key}}" value="{{$key == 'owner_id' ? nameAndNickname($secretFriendGroup->owner->name) : $value}}">
+                            <input type="text" class="form-control" readonly="readonly" name="{{$key}}" id="{{$key}}" value="{{$key == 'owner' ? nameAndNickname($secretFriendGroup->owner->name) : $value}}">
                         </div>
                     @endif
                 @endforeach

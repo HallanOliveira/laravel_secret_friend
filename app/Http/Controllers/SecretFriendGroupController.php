@@ -14,6 +14,7 @@ use App\Core\Services\SecretFriendGroup\UpdateSecretFriendGroupService;
 use App\Core\Services\SecretFriendGroup\ListSecretFriendGroupService;
 use App\Core\DTO\SecretFriendGroup\InputSecretFriendGroupDTO;
 use App\Core\DTO\SecretFriendGroup\OutputSecretFriendGroupDTO;
+use App\Core\DTO\User\OutputUserDTO;
 
 class SecretFriendGroupController extends AppBaseController
 {
@@ -53,8 +54,12 @@ class SecretFriendGroupController extends AppBaseController
     public function show(SecretFriendGroup $secretFriendGroup)
     {
         try {
+            $userDTO                        = OutputUserDTO::create($secretFriendGroup->owner->toArray());
+            $dataSecretFriendGroup          = $secretFriendGroup->toArray();
+            $dataSecretFriendGroup['owner'] = $userDTO;
+            $secretFriendGroupDTO           = OutputSecretFriendGroupDTO::create($dataSecretFriendGroup);
             return view('secretFriendGroup/show', [
-                'secretFriendGroup' => $secretFriendGroup
+                'secretFriendGroup' => $secretFriendGroupDTO
             ]);
         } catch (Exception $e) {
             return $this->redirectWithError($e->getMessage(), 'secretFriendGroups.index');
@@ -78,7 +83,7 @@ class SecretFriendGroupController extends AppBaseController
     public function destroy(SecretFriendGroup $secretFriendGroup)
     {
         try {
-            $secretFriendGroup->delete();
+            $this->secretFriendGroupRepository->delete($secretFriendGroup->id);
         } catch (Exception $e) {
             $this->setFlashMessage($e->getMessage(), 'danger');
         }
