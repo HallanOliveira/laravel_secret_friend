@@ -31,7 +31,7 @@ class SecretFriendGroupController extends AppBaseController
         } catch (Exception $e) {
             $this->setFlashMessage($e->getMessage(), 'danger');
         }
-        return view('secretFriendGroup/index', [
+        return view('secretFriendGroup.index', [
             'secretFriendsGroups' => $secretFriendsGroups ?? []
         ]);
     }
@@ -58,7 +58,7 @@ class SecretFriendGroupController extends AppBaseController
             $dataSecretFriendGroup          = $secretFriendGroup->toArray();
             $dataSecretFriendGroup['owner'] = $userDTO;
             $secretFriendGroupDTO           = OutputSecretFriendGroupDTO::create($dataSecretFriendGroup);
-            return view('secretFriendGroup/show', [
+            return view('secretFriendGroup.show', [
                 'secretFriendGroup' => $secretFriendGroupDTO
             ]);
         } catch (Exception $e) {
@@ -93,7 +93,7 @@ class SecretFriendGroupController extends AppBaseController
     public function formCreate()
     {
         try {
-            return view('secretFriendGroup/form_create');
+            return view('secretFriendGroup.form_create');
         } catch (Exception $e) {
             return $this->redirectWithError($e->getMessage(), 'secretFriendGroups.index');
         }
@@ -106,7 +106,7 @@ class SecretFriendGroupController extends AppBaseController
         } catch (Exception $e) {
             return $this->redirectWithError($e->getMessage(), 'secretFriendGroups.index');
         }
-        return view('secretFriendGroup/form_update', [
+        return view('secretFriendGroup.form_update', [
             'secretFriendGroup' => $dto
         ]);
     }

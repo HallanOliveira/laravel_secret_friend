@@ -34,5 +34,5 @@
 @endsection
 
 @push('scripts')
-@vite(['resources/js/secretFriendGroup/script.js'])
+@vite(['resources/js/secretFriendGroup/delete.js'])
 @endpush

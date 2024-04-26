@@ -21,11 +21,32 @@
                     <div class="mb-3">
                         @csrf
                         <label for="secret-group-name" class="form-label">Nome do grupo <span class="text-danger">*</span></label>
-                        <input type="text" maxlength="100" class="form-control required" name="name" id="secret-group-name" placeholder="Nome do grupo" value="{{old('name')}}">
+                        <input type="text" maxlength="100" class="form-control required" name="SecretFriendGroup[name]" id="secret-group-name" placeholder="Nome do grupo" value="{{old('name')}}">
                         <br>
                         <label for="reveal-date" class="form-label">Data de revelação <span class="text-danger">*</span></label>
-                        <input type="date" maxlength="10" class="form-control" name="reveal_date" id="reveal-date"  value="{{formatDate(old('reveal-date') ?? '', 'Y-m-d')}}">
+                        <input type="date" maxlength="10" class="form-control" name="SecretFriendGroup[reveal_date]" id="reveal-date"  value="{{formatDate(old('reveal-date') ?? '', 'Y-m-d')}}">
+                        <hr>
+
+                        <div class="h6 col-3">Participantes:</div>
+
+                        <div id="form-participants">
+                            <div class="row mb-3">
+                                <div class="col-md-4">
+                                    <input type="text" class="form-control" name="Participant[nome][]" placeholder="Nome">
+                                </div>
+                                <div class="col-4">
+                                    <input type="text" class="form-control" name="Participant[email][]" placeholder="Email">
+                                </div>
+                                <div class="col-3">
+                                    <input type="text" class="form-control" name="Participant[whatsapp][]" placeholder="Whatsapp">
+                                </div>
+                                <div class="col-1 d-flex justify-content-between">
+                                    <a class="btn btn-success btn-sm" id="participant-add"><i class="bi bi-plus-square"></i></a>
+                                </div>
+                            </div>
+                        </div>
                     </div>
+                    <hr>
                     <div class="float-end">
                         <a type="button" class="btn btn-secondary" href="/secretFriendGroups">Cancelar</a>
                         <button type="submit" class="btn btn-primary">Salvar</button>
@@ -35,4 +56,25 @@
         </div>
     </div>
 </div>
+
+<div id="form-participants-example" style="display: none">
+    <div class="row mb-3">
+        <div class="col-md-4">
+            <input type="text" class="form-control" name="Participant[nome][]" placeholder="Nome">
+        </div>
+        <div class="col-4">
+            <input type="text" class="form-control" name="Participant[email][]" placeholder="Email">
+        </div>
+        <div class="col-3">
+            <input type="text" class="form-control" name="Participant[whatsapp][]" placeholder="Whatsapp">
+        </div>
+        <div class="col-1 d-flex justify-content-between">
+            <a class="btn btn-danger btn-sm participant-remove"><i class="bi bi-trash"></i></a>
+        </div>
+    </div>
+</div>
 @endsection
+
+@push('scripts')
+@vite(['resources/js/participant/form-add.js', 'resources/js/participant/form-remove.js'])
+@endpush
