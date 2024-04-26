@@ -21,3 +21,16 @@ services:
       MYSQL_ROOT_PASSWORD:
     volumes:
       - ./data:/var/lib/mysql
+    ports:  
+      - 3306:3306
+  db-test:
+    image: mysql:8.0
+    environment:
+      MYSQL_DATABASE:
+      MYSQL_USER:
+      MYSQL_PASSWORD:
+      MYSQL_ROOT_PASSWORD:
+    volumes:
+      - ./data-test:/var/lib/mysql
+    ports:
+      - 33060:3306

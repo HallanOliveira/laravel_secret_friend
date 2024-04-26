@@ -1,5 +1,4 @@
-$('.participant-remove').on('click', function() {
-        //$(this).closest('.row').remove();
-        console.log($(this).closest('.row'));
+window.removeOption = function(obj) {
+    obj.closest('.row').remove();
     return false;
-});
+}

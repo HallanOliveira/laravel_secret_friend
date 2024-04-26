@@ -5,6 +5,7 @@ namespace App\Core\Services\SecretFriendGroup;
 use App\Core\Contracts\Service;
 use App\Core\Contracts\Repository;
 use App\Core\Contracts\DTO;
+use App\Core\DTO\SecretFriendGroup\OutputSecretFriendGroupDTO;
 
 class UpdateSecretFriendGroupService implements Service
 {
@@ -14,7 +15,7 @@ class UpdateSecretFriendGroupService implements Service
     ) {
     }
 
-    public function execute(): DTO
+    public function execute(): OutputSecretFriendGroupDTO
     {
         $dto = $this->repository->update($this->dto);
         if ($dto instanceof DTO) {

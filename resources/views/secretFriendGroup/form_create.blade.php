@@ -69,7 +69,7 @@
             <input type="text" class="form-control" name="Participant[whatsapp][]" placeholder="Whatsapp">
         </div>
         <div class="col-1 d-flex justify-content-between">
-            <a class="btn btn-danger btn-sm participant-remove"><i class="bi bi-trash"></i></a>
+            <a class="btn btn-danger btn-sm participant-remove" onclick="removeOption($(this))"><i class="bi bi-trash"></i></a>
         </div>
     </div>
 </div>

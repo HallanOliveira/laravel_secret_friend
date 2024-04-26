@@ -7,13 +7,13 @@ use App\Core\DTO\User\OutputUserDTO;
 
 class OutputSecretFriendGroupDTO implements DTO
 {
-    public readonly int     $id;
-    public readonly string  $name;
-    public readonly string  $reveal_date;
-    public readonly int     $owner_id;
-    public readonly DTO     $owner;
-    public readonly string  $created_at;
-    public readonly int     $created_by;
+    public readonly int           $id;
+    public readonly string        $name;
+    public readonly string        $reveal_date;
+    public readonly int           $owner_id;
+    public readonly OutputUserDTO $owner;
+    public readonly string        $created_at;
+    public readonly int           $created_by;
 
     public static function create(array $values): self
     {

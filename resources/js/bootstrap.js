@@ -21,6 +21,12 @@ defineJQueryPlugin(bootstrap.Modal);
 defineJQueryPlugin(bootstrap.Tooltip);
 defineJQueryPlugin(bootstrap.Popover);
 
+import * as toastr from 'toastr';
+window.toastr = toastr;
+
+import {Swal} from 'sweetalert2';
+window.Swal = Swal;
+
 import axios from 'axios';
 window.$ = window.jQuery = $;
 window.axios = axios;

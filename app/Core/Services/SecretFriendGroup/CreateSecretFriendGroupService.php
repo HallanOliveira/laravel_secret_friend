@@ -5,6 +5,8 @@ namespace App\Core\Services\SecretFriendGroup;
 use App\Core\Contracts\Service;
 use App\Core\Contracts\Repository;
 use App\Core\Contracts\DTO;
+use App\Core\DTO\SecretFriendGroup\OutputSecretFriendGroupDTO;
+
 class CreateSecretFriendGroupService implements Service
 {
     public function __construct(
@@ -13,7 +15,7 @@ class CreateSecretFriendGroupService implements Service
     ) {
     }
 
-    public function execute(): DTO
+    public function execute(): OutputSecretFriendGroupDTO
     {
         $dto = $this->repository->create($this->dto);
         if ($dto instanceof DTO) {
