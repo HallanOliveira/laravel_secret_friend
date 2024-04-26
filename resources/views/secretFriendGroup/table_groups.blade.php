@@ -17,7 +17,6 @@
                             Ações
                         </button>
                         <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="/participant/formCreate" id="create-participant">Adicionar Participantes</a></li>
                             <li><a class="dropdown-item" href="/secretFriendGroups/{{$group['id']}}" id="view-group">Visualizar</a></li>
                             <li><a class="dropdown-item" href="/secretFriendGroups/{{$group['id']}}/formUpdate" id="update-group">Alterar</a></li>
                             <li><a class="dropdown-item" href="#" data-id="{{$group['id']}}" id="delete-group">Deletar</a></li>
