@@ -1,5 +1,3 @@
-import Swal from 'sweetalert2';
-
 $('#delete-group').on('click', function() {
     var groupId = $(this).data('id');
     Swal.fire({
