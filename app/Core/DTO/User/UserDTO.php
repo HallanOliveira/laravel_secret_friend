@@ -1,16 +1,14 @@
 <?php
 
-namespace App\Core\DTO\SecretFriendGroup;
+namespace App\Core\DTO\User;
 
 use App\Core\Contracts\DTO;
 
-class InputSecretFriendGroupDTO implements DTO
+class UserDTO implements DTO
 {
     public readonly int    $id;
     public readonly string $name;
-    public readonly string $reveal_date;
-    public readonly int    $owner_id;
-    public readonly array  $participants;
+    public readonly string $email;
 
     public static function create(array $values): self
     {

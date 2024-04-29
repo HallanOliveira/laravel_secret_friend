@@ -13,11 +13,11 @@ class Participant extends Model
     public static $rules = [
         'name'                   => 'required|string|max:150',
         'owner_id'               => 'integer|exists:users,id',
-        'phone'                  => 'string|max:14',
-        'email'                  => 'string|max:150',
-        'suggestion'             => 'string|max:250',
+        'phone'                  => 'nullable|string|max:14',
+        'email'                  => 'nullable|email|max:150',
+        'suggestion'             => 'nullable|string|max:250',
         'secret_friend_id'       => 'integer',
-        'secret_friend_group_id' => 'required|string|max:14',
+        'secret_friend_group_id' => 'string|max:14',
     ];
 
     protected $fillable = [

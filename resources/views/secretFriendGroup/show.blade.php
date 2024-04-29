@@ -18,6 +18,9 @@
             </div>
             <div class="card-body">
                 @foreach ($secretFriendGroup->toArray() as $key => $value)
+                    @if($key == 'participants')
+                        @continue
+                    @endif
                     @if($key == 'reveal_date' || $key == 'created_at')
                         <div class="mb-3">
                             <label for="{{$key}}" class="form-label">{{__('validation.attributes.'.$key)}}</label>
@@ -30,6 +33,14 @@
                         </div>
                     @endif
                 @endforeach
+                <hr>
+                <div class="h6 col-3">Participantes:</div>
+                @if (! empty($participants))
+                    @include('participant.form', ['participants' => $participants, 'toView' => true])
+                @else
+                    <p>Nenhum participante cadastrado</p>
+                @endif
+                <hr>
                 <div class="float-end">
                     <a class="btn btn-secondary" href="/secretFriendGroups">Voltar</a>
                     <a class="btn btn-primary" href="/secretFriendGroups/{{$secretFriendGroup->id}}/formUpdate">Alterar</a>

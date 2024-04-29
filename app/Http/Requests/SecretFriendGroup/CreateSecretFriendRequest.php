@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\SecretFriendGroup;
 
+use App\Models\Participant;
 use App\Models\SecretFriendGroup;
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -24,6 +25,10 @@ class CreateSecretFriendRequest extends FormRequest
      */
     public function rules()
     {
-        return SecretFriendGroup::$rules;
+        $dependenciesRules = [];
+        foreach (Participant::$rules as $key => $rule) {
+            $dependenciesRules["Participant.*.$key"] = 'sometimes|'.$rule;
+        }
+        return SecretFriendGroup::$rules + $dependenciesRules;
     }
 }

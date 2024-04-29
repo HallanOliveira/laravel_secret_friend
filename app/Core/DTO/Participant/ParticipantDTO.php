@@ -1,14 +1,19 @@
 <?php
 
-namespace App\Core\DTO\User;
+namespace App\Core\DTO\Participant;
 
 use App\Core\Contracts\DTO;
 
-class OutputUserDTO implements DTO
+class ParticipantDTO implements DTO
 {
     public readonly int    $id;
     public readonly string $name;
+    public readonly int    $owner_id;
+    public readonly string $phone;
     public readonly string $email;
+    public readonly string $suggestion;
+    public readonly int    $secret_friend_id;
+    public readonly int    $secret_friend_group_id;
 
     public static function create(array $values): self
     {

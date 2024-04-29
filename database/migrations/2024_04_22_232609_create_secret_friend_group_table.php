@@ -3,6 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use App\Models\User;
 
 return new class extends Migration
 {
@@ -16,7 +17,7 @@ return new class extends Migration
         Schema::create('secret_friend_groups', function (Blueprint $table) {
             $table->id();
             $table->string('name', 120);
-            $table->integer('owner_id');
+            $table->foreignIdFor(User::class, 'owner_id');
             $table->timestamp('reveal_date');
             $table->timestamps();
             $table->softDeletes();
@@ -30,6 +31,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('secret_friend_group');
+        Schema::dropIfExists('secret_friend_groups');
     }
 };

@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Models\Participant;
 
 class SecretFriendGroup extends Model
 {
@@ -30,5 +31,10 @@ class SecretFriendGroup extends Model
     public function owner()
     {
         return $this->belongsTo(User::class, 'owner_id');
+    }
+
+    public function participants()
+    {
+        return $this->hasMany(Participant::class, 'secret_friend_group_id');
     }
 }

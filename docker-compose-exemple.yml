@@ -21,7 +21,7 @@ services:
       MYSQL_ROOT_PASSWORD:
     volumes:
       - ./data:/var/lib/mysql
-    ports:  
+    ports:
       - 3306:3306
   db-test:
     image: mysql:8.0

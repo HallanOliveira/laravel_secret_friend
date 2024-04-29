@@ -3,17 +3,18 @@
 namespace App\Core\DTO\SecretFriendGroup;
 
 use App\Core\Contracts\DTO;
-use App\Core\DTO\User\OutputUserDTO;
+use App\Core\DTO\User\UserDTO;
 
 class OutputSecretFriendGroupDTO implements DTO
 {
-    public readonly int           $id;
-    public readonly string        $name;
-    public readonly string        $reveal_date;
-    public readonly int           $owner_id;
-    public readonly OutputUserDTO $owner;
-    public readonly string        $created_at;
-    public readonly int           $created_by;
+    public readonly int     $id;
+    public readonly string  $name;
+    public readonly string  $reveal_date;
+    public readonly int     $owner_id;
+    public readonly UserDTO $owner;
+    public readonly string  $created_at;
+    public readonly int     $created_by;
+    public readonly array   $participants; # array of ParticipantDTO
 
     public static function create(array $values): self
     {
