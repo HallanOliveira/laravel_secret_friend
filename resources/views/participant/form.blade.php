@@ -14,7 +14,7 @@
                         <input type="text" {{$toView ? 'readonly="readonly"' : ''}} class="form-control" name="Participant[{{$key}}][phone]" placeholder="Whatsapp" value="{{old("Participant.$key.phone", $participant['phone'])}}">
                     </div>
                     <div class="col-1 d-flex justify-content-between">
-                        @if ($key > 0 && ! $toView)
+                        @if (! $toView)
                             <a class="btn btn-danger btn-sm participant-remove" onclick="removeOption($(this))"><i class="bi bi-trash"></i></a>
                         @endif
                     </div>

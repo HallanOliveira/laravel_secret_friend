@@ -36,7 +36,7 @@
                         <div class="h6 col-3">Participantes:</div>
                         @include('participant.form', [
                             'participants' => $secretFriendGroup->participants ?? old('Participant'),
-                            'readonly'     => false
+                            'toView'       => false
                         ])
                         <a class="btn btn-success btn-sm" id="participant-add"><i class="bi bi-plus-square"></i> Adicionar Participates</a>
                         <hr>

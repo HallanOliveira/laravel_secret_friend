@@ -28,6 +28,12 @@ class SecretFriendGroupController extends AppBaseController
     ) {
     }
 
+    /**
+     * Lista secret friend groups
+     *
+     * @param Request $request
+     * @return View|null
+     */
     public function index(Request $request): ?View
     {
         try {
@@ -42,6 +48,12 @@ class SecretFriendGroupController extends AppBaseController
         ]);
     }
 
+    /**
+     * Create secret friend group and participants
+     *
+     * @param CreateSecretFriendRequest $request
+     * @return RedirectResponse
+     */
     public function store(CreateSecretFriendRequest $request): RedirectResponse
     {
         try {
@@ -65,6 +77,12 @@ class SecretFriendGroupController extends AppBaseController
         return $this->redirectWithSuccess('Grupo criado com sucesso!', 'secretFriendGroups.index');
     }
 
+    /**
+     * Show secret friend resume
+     *
+     * @param SecretFriendGroup $secretFriendGroup
+     * @return View|RedirectResponse
+     */
     public function show(SecretFriendGroup $secretFriendGroup): View|RedirectResponse
     {
         try {
@@ -86,6 +104,13 @@ class SecretFriendGroupController extends AppBaseController
 
     }
 
+    /**
+     * Update secret friend
+     *
+     * @param UpdateSecretFriendRequest $request
+     * @param SecretFriendGroup $secretFriendGroup
+     * @return RedirectResponse
+     */
     public function update(UpdateSecretFriendRequest $request, SecretFriendGroup $secretFriendGroup): RedirectResponse
     {
         try {
@@ -99,6 +124,12 @@ class SecretFriendGroupController extends AppBaseController
         return $this->redirectWithSuccess('Grupo atualizado com sucesso!', 'secretFriendGroups.index');
     }
 
+    /**
+     * Delete secre friend group
+     *
+     * @param SecretFriendGroup $secretFriendGroup
+     * @return void
+     */
     public function destroy(SecretFriendGroup $secretFriendGroup): void
     {
         try {
@@ -109,6 +140,11 @@ class SecretFriendGroupController extends AppBaseController
         $this->setFlashMessage('Grupo deletado com sucesso!', 'success');
     }
 
+    /**
+     * Get create html form
+     *
+     * @return RedirectResponse|View
+     */
     public function formCreate(): RedirectResponse|View
     {
         try {
@@ -121,15 +157,22 @@ class SecretFriendGroupController extends AppBaseController
         }
     }
 
+    /**
+     * Get update html form
+     *
+     * @param SecretFriendGroup $secretFriendGroup
+     * @return RedirectResponse|View
+     */
     public function formUpdate(SecretFriendGroup $secretFriendGroup): RedirectResponse|View
     {
         try {
-            $participantsDTO = array_map(function($participant) {
-                return ParticipantDTO::create($participant->toArray());
-            }, $secretFriendGroup->participants ?? []);
+            $participants = [];
+            if (! empty($secretFriendGroup->participants)) {
+                $participants = $secretFriendGroup->participants->toArray();
+            }
 
             $secretFriendGroupArray                 = $secretFriendGroup->toArray();
-            $secretFriendGroupArray['participants'] = $participantsDTO;
+            $secretFriendGroupArray['participants'] = $participants;
             $secretFriendGroupDTO                   = OutputSecretFriendGroupDTO::create($secretFriendGroupArray);
             return view('secretFriendGroup.form', [
                 'secretFriendGroup' => $secretFriendGroupDTO,

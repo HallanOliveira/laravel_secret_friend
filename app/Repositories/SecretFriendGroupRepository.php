@@ -23,6 +23,7 @@ class SecretFriendGroupRepository implements Repository
 
     public static function createMany(array $data): array
     {
+        // TODO: create many records
     }
 
     public function update(int $id, array $data): array
