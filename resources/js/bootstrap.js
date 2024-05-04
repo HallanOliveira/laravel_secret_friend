@@ -5,6 +5,7 @@
  */
 import $ from 'jquery';
 import * as bootstrap from 'bootstrap';
+import 'jquery-mask-plugin';
 
 function defineJQueryPlugin(plugin) {
     const name = plugin.NAME;

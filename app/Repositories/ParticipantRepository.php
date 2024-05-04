@@ -37,19 +37,28 @@ class ParticipantRepository implements Repository
 
     public function update(int $id, array $data): array
     {
-
+        // TODO: update records
     }
 
     public function view(int $id): bool
     {
+        // TODO: view record
     }
 
     public function delete(int $id): bool
     {
+        return $this
+            ->model
+            ->find($id)
+            ->delete();
     }
 
     public function getAll(array $filters): array
     {
-
+        $data = $this->model
+            ->where($filters)
+            ->orderBy('id', 'desc')
+            ->get();
+        return $data->toArray();
     }
 }

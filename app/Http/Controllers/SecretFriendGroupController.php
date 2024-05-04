@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use Exception;
-use Illuminate\Http\Request;
 use App\Models\SecretFriendGroup;
 use App\Http\Controllers\AppBaseController;
 use App\Http\Requests\SecretFriendGroup\CreateSecretFriendRequest;
@@ -13,18 +12,21 @@ use App\Repositories\ParticipantRepository;
 use App\Core\Services\SecretFriendGroup\CreateSecretFriendGroupService;
 use App\Core\Services\SecretFriendGroup\UpdateSecretFriendGroupService;
 use App\Core\Services\SecretFriendGroup\ListSecretFriendGroupService;
-use App\Core\DTO\SecretFriendGroup\InputSecretFriendGroupDTO;
-use App\Core\DTO\SecretFriendGroup\OutputSecretFriendGroupDTO;
-use App\Core\DTO\User\UserDTO;
-use App\Core\DTO\Participant\ParticipantDTO;
+use App\Core\Services\SecretFriendGroup\DeleteSecretFriendGroupService;
+use App\Core\DTO\SecretFriendGroupDTO;
+use App\Core\DTO\UserDTO;
+use App\Core\DTO\ParticipantDTO;
+use Illuminate\Http\Request;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
+use App\Adapters\Providers\DBTransactionProvider;
 
 class SecretFriendGroupController extends AppBaseController
 {
     public function __construct(
         protected readonly SecretFriendGroupRepository $secretFriendGroupRepository,
         protected readonly ParticipantRepository       $participantRepository,
+        protected readonly DBTransactionProvider       $DBTransaction
     ) {
     }
 
@@ -60,14 +62,15 @@ class SecretFriendGroupController extends AppBaseController
             $payload          = $request->validated();
             $participantsDTOs = array_map(function($participant) {
                 return ParticipantDTO::create( array_filter($participant));
-            }, $payload['Participant'] ?? []);
+            }, $payload['participants'] ?? []);
 
             $payload['participants'] = $participantsDTOs;
-            $secretFriendGroupDTO    = InputSecretFriendGroupDTO::create($payload);
+            $secretFriendGroupDTO    = SecretFriendGroupDTO::create($payload);
             $service                 = new CreateSecretFriendGroupService(
                 $secretFriendGroupDTO,
                 $this->secretFriendGroupRepository,
                 $this->participantRepository,
+                $this->DBTransaction,
                 auth()->id()
             );
             $service->execute();
@@ -89,14 +92,19 @@ class SecretFriendGroupController extends AppBaseController
             $dataSecretFriendGroup          = $secretFriendGroup->toArray();
             $userDTO                        = UserDTO::create($secretFriendGroup->owner->toArray());
             $dataSecretFriendGroup['owner'] = $userDTO;
-            $secretFriendGroupDTO           = OutputSecretFriendGroupDTO::create($dataSecretFriendGroup);
+            $i = 1;
             if (! empty($secretFriendGroup->participants)) {
-                $participants = $secretFriendGroup->participants->toArray();
+                $participantsArray = $secretFriendGroup->participants->toArray();
+                foreach($participantsArray as $participant) {
+                    $participantsDTOs[$i++] = ParticipantDTO::create(array_filter($participant));
+                }
             }
+            $secretFriendGroupDTO['participants'] = $participantsDTOs ?? [];
+            $secretFriendGroupDTO = SecretFriendGroupDTO::create($dataSecretFriendGroup);
 
             return view('secretFriendGroup.show', [
                 'secretFriendGroup' => $secretFriendGroupDTO,
-                'participants'      => $participants ?? [],
+                'participants'      => $participantsDTOs ?? [],
             ]);
         } catch (Exception $e) {
             return $this->redirectWithError($e->getMessage(), 'secretFriendGroups.index');
@@ -114,9 +122,26 @@ class SecretFriendGroupController extends AppBaseController
     public function update(UpdateSecretFriendRequest $request, SecretFriendGroup $secretFriendGroup): RedirectResponse
     {
         try {
-            $payload = $request->validated();
-            $dto     = InputSecretFriendGroupDTO::create($payload + $secretFriendGroup->toArray());
-            $service = new UpdateSecretFriendGroupService($dto, $this->secretFriendGroupRepository);
+            $payload          = $request->validated();
+            $payload['id']    = $secretFriendGroup->id;
+            $dataDTO          = $payload;
+            $participantsDTOs = [];
+            $i                = 1;
+
+            if (! empty($payload['participants'])) {
+                foreach($payload['participants'] as $participant) {
+                    $participantsDTOs[$i++] = ParticipantDTO::create($participant);
+                }
+            }
+
+            $dataDTO['participants'] = $participantsDTOs;
+            $secretFriendGroupDTO    = SecretFriendGroupDTO::create($dataDTO);
+            $service                 = new UpdateSecretFriendGroupService(
+                $secretFriendGroupDTO,
+                $this->secretFriendGroupRepository,
+                $this->participantRepository,
+                $this->DBTransaction
+            );
             $service->execute();
         } catch(Exception $e) {
             return $this->redirectWithError($e->getMessage(), 'secretFriendGroups.index');
@@ -133,7 +158,13 @@ class SecretFriendGroupController extends AppBaseController
     public function destroy(SecretFriendGroup $secretFriendGroup): void
     {
         try {
-            $this->secretFriendGroupRepository->delete($secretFriendGroup->id);
+            $service = new DeleteSecretFriendGroupService(
+                $secretFriendGroup->id,
+                $this->DBTransaction,
+                $this->secretFriendGroupRepository,
+                $this->participantRepository
+            );
+            $service->execute();
         } catch (Exception $e) {
             $this->setFlashMessage($e->getMessage(), 'danger');
         }
@@ -149,7 +180,7 @@ class SecretFriendGroupController extends AppBaseController
     {
         try {
             return view('secretFriendGroup.form', [
-                'secretFriendGroup' => OutputSecretFriendGroupDTO::create([]),
+                'secretFriendGroup' => [],
                 'isUpdate'          => false
             ]);
         } catch (Exception $e) {
@@ -166,14 +197,18 @@ class SecretFriendGroupController extends AppBaseController
     public function formUpdate(SecretFriendGroup $secretFriendGroup): RedirectResponse|View
     {
         try {
-            $participants = [];
+            $participantsDTOs = [];
+            $i = 1;
             if (! empty($secretFriendGroup->participants)) {
-                $participants = $secretFriendGroup->participants->toArray();
+                $participantsArray = $secretFriendGroup->participants->toArray();
+                foreach($participantsArray as $participant) {
+                    $participantsDTOs[$i++] = ParticipantDTO::create(array_filter($participant));
+                }
             }
 
             $secretFriendGroupArray                 = $secretFriendGroup->toArray();
-            $secretFriendGroupArray['participants'] = $participants;
-            $secretFriendGroupDTO                   = OutputSecretFriendGroupDTO::create($secretFriendGroupArray);
+            $secretFriendGroupArray['participants'] = $participantsDTOs;
+            $secretFriendGroupDTO                   = SecretFriendGroupDTO::create($secretFriendGroupArray);
             return view('secretFriendGroup.form', [
                 'secretFriendGroup' => $secretFriendGroupDTO,
                 'isUpdate'          => true

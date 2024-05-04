@@ -5,25 +5,33 @@ namespace App\Core\Services\SecretFriendGroup;
 use App\Core\Contracts\Service;
 use App\Core\Contracts\Repository;
 use App\Core\Contracts\DTO;
-use App\Core\DTO\SecretFriendGroup\OutputSecretFriendGroupDTO;
-use Illuminate\Support\Facades\DB;
+use App\Core\Contracts\DBTransaction;
+use App\Core\DTO\SecretFriendGroupDTO;
+use App\Core\Services\Participant\CreateManyParticipantService;
 
 class CreateSecretFriendGroupService implements Service
 {
     public function __construct(
-        protected DTO        $dto,
-        protected Repository $secretFriendRepository,
-        protected Repository $participantRepository,
-        protected int        $ownerId
+        protected DTO           $dto,
+        protected Repository    $secretFriendRepository,
+        protected Repository    $participantRepository,
+        protected DBTransaction $DBTransaction,
+        protected int           $ownerId
     ) {
     }
 
-    public function execute(): OutputSecretFriendGroupDTO
+    /**
+     * Create new secret friend group
+     *
+     * @return SecretFriendGroupDTO
+     * @throws \Exception
+     */
+    public function execute(): SecretFriendGroupDTO
     {
+        $this->DBTransaction::begin();
+
         $secretFriendGroupArray             = $this->dto->toArray();
         $secretFriendGroupArray['owner_id'] = $this->ownerId;
-
-        DB::beginTransaction();
 
         $secretFriendGroupCreated = $this->secretFriendRepository->create($secretFriendGroupArray);
         if (empty($secretFriendGroupCreated['id'])) {
@@ -32,23 +40,18 @@ class CreateSecretFriendGroupService implements Service
 
         $participantCreateds = [];
         if (! empty($secretFriendGroupArray['participants'])) {
-            foreach($secretFriendGroupArray['participants'] as $participantDTO) {
-                $participantArray                           = $participantDTO->toArray();
-                $participantArray['secret_friend_group_id'] = $secretFriendGroupCreated['id'];
-                $participantArray['owner_id']               = $this->ownerId;
-                $participantsArray[]                        = $participantArray;
-            }
-
-            $participantCreated = $this->participantRepository::createMany($participantsArray);
-            if (in_array(false,$participantCreated)) {
-                DB::rollBack();
+            $createManyParticipantService = new CreateManyParticipantService(
+                $secretFriendGroupArray['participants'],
+                $this->participantRepository,
+                SecretFriendGroupDTO::create($secretFriendGroupCreated)
+            );
+            $participantCreateds          = $createManyParticipantService->execute();
+            if (in_array(false,$participantCreateds)) {
                 throw new \Exception('Erro ao criar participante.');
             }
-            $participantCreateds[] = $participantCreated;
-            unset($participantCreated);
         }
-        DB::commit();
+        $this->DBTransaction::commit();
         $secretFriendGroupCreated['participants'] = $participantCreateds;
-        return OutputSecretFriendGroupDTO::create($secretFriendGroupCreated);
+        return SecretFriendGroupDTO::create($secretFriendGroupCreated);
     }
 }

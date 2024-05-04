@@ -1,19 +1,21 @@
 <?php
 
-namespace App\Core\DTO\SecretFriendGroup;
+namespace App\Core\DTO;
 
 use App\Core\Contracts\DTO;
-use App\Core\DTO\User\UserDTO;
+use App\Core\DTO\UserDTO;
 
-class OutputSecretFriendGroupDTO implements DTO
+
+class SecretFriendGroupDTO implements DTO
 {
     public readonly int     $id;
+    public readonly int     $owner_id;
     public readonly string  $name;
     public readonly string  $reveal_date;
-    public readonly int     $owner_id;
-    public readonly UserDTO $owner;
+    public readonly string  $reveal_location;
     public readonly string  $created_at;
     public readonly int     $created_by;
+    public readonly UserDTO $owner;
     public readonly array   $participants; # array of ParticipantDTO
 
     public static function create(array $values): self

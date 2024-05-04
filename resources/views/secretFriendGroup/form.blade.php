@@ -15,7 +15,7 @@
         <div class="card">
             <div class="card-header">
                 @if($isUpdate)
-                    Alterar Amigo Secreto
+                    Alterar Amigo Secreto: {{$secretFriendGroup->name}}
                 @else
                     Criar amigos secretos
                 @endif
@@ -28,14 +28,17 @@
                             <input type="hidden" name="_method" value="put" />
                         @endif
                         <label for="secret-group-name" class="form-label">Nome do grupo <span class="text-danger">*</span></label>
-                        <input type="text" maxlength="100" class="form-control required" name="name" id="secret-group-name" placeholder="Nome do grupo" value="{{$isUpdate ? old('name', $secretFriendGroup->name) : old('name')}}">
+                        <input type="text" maxlength="120" class="form-control" name="name" id="secret-group-name" placeholder="Nome do grupo" value="{{$isUpdate ? old('name', $secretFriendGroup->name) : old('name')}}">
                         <br>
                         <label for="reveal-date" class="form-label">Data de revelação <span class="text-danger">*</span></label>
                         <input type="date" maxlength="10" class="form-control" name="reveal_date" id="reveal-date"  value="{{formatDate($isUpdate ? old('reveal_date', $secretFriendGroup->reveal_date) : old('reveal_date',''), 'Y-m-d')}}">
+                        <br>
+                        <label for="reveal-location" class="form-label">Local de revelação <span class="text-danger">*</span></label>
+                        <input type="text" maxlength="120" class="form-control" name="reveal_location" id="reveal-location"  value="{{$isUpdate ? old('reveal_location', $secretFriendGroup->reveal_location) : old('reveal_location')}}">
                         <hr>
                         <div class="h6 col-3">Participantes:</div>
                         @include('participant.form', [
-                            'participants' => $secretFriendGroup->participants ?? old('Participant'),
+                            'participants' => $isUpdate ? old('participants', $secretFriendGroup->participants) : old('participants', []),
                             'toView'       => false
                         ])
                         <a class="btn btn-success btn-sm" id="participant-add"><i class="bi bi-plus-square"></i> Adicionar Participates</a>

@@ -16,8 +16,9 @@ return new class extends Migration
     {
         Schema::create('secret_friend_groups', function (Blueprint $table) {
             $table->id();
-            $table->string('name', 120);
             $table->foreignIdFor(User::class, 'owner_id');
+            $table->string('name', 120);
+            $table->string('reveal_location', 120);
             $table->timestamp('reveal_date');
             $table->timestamps();
             $table->softDeletes();

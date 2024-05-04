@@ -27,7 +27,7 @@ class CreateSecretFriendRequest extends FormRequest
     {
         $dependenciesRules = [];
         foreach (Participant::$rules as $key => $rule) {
-            $dependenciesRules["Participant.*.$key"] = 'sometimes|'.$rule;
+            $dependenciesRules["participants.*.$key"] = 'sometimes|'.$rule;
         }
         return SecretFriendGroup::$rules + $dependenciesRules;
     }

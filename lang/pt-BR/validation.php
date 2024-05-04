@@ -189,7 +189,7 @@ return [
         'minute'    => 'minuto',
         'mobile'    => 'celular',
         'month'     => 'mês',
-        'name'      => 'nome',
+        'name'      => 'Nome',
         'zipcode'   => 'cep',
         'company_name'   => 'razão social',
         'neighborhood' => 'bairro',
@@ -218,10 +218,11 @@ return [
         'created_by'             => 'Criado por',
         'id'                     => 'ID',
         'reveal_date'            => 'Data de revelação',
+        'reveal_location'        => 'Local de revelação',
         'owner_id'               => 'Criado por',
-        'Participant.*.name'     => 'Nome do Participante :index',
-        'Participant.*.email'    => 'Email do Participante :index',
-        'Participant.*.whatsapp' => 'Telefone do Participante :index',
+        'participants.*.name'     => 'Nome do Participante :index',
+        'participants.*.email'    => 'Email do Participante :index',
+        'participants.*.whatsapp' => 'Telefone do Participante :index',
     ],
 
 ];

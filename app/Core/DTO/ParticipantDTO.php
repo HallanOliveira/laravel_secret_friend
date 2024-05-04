@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Core\DTO\Participant;
+namespace App\Core\DTO;
 
 use App\Core\Contracts\DTO;
 

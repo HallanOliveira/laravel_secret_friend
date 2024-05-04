@@ -12,15 +12,17 @@ class SecretFriendGroup extends Model
     use HasFactory, SoftDeletes;
 
     public static $rules = [
-        'name'        => 'required|string|max:120',
-        'owner_id'    => 'integer|exists:users,id',
-        'reveal_date' => 'required|date'
+        'name'            => 'required|string|max:120',
+        'owner_id'        => 'integer|exists:users,id',
+        'reveal_date'     => 'required|date',
+        'reveal_location' => 'required|string|max:120',
     ];
 
     protected $fillable = [
         'name',
         'owner_id',
-        'reveal_date'
+        'reveal_date',
+        'reveal_location'
     ];
 
     protected $hidden = [

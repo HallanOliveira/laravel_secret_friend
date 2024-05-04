@@ -43,7 +43,10 @@ class SecretFriendGroupRepository implements Repository
 
     public function delete(int $id): bool
     {
-        return $this->model->find($id)->delete();
+        return $this
+            ->model
+            ->find($id)
+            ->delete();
     }
 
     public function getAll(array $filters): array

@@ -4,6 +4,7 @@ namespace App\Http\Requests\SecretFriendGroup;
 
 use App\Models\SecretFriendGroup;
 use Illuminate\Foundation\Http\FormRequest;
+use App\Models\Participant;
 
 class UpdateSecretFriendRequest extends FormRequest
 {
@@ -24,6 +25,21 @@ class UpdateSecretFriendRequest extends FormRequest
      */
     public function rules()
     {
-        return SecretFriendGroup::$rules;
+        $dependenciesRules = [];
+        foreach (Participant::$rules as $key => $rule) {
+            $dependenciesRules["participants.*.$key"] = 'sometimes|'.$rule;
+        }
+        return SecretFriendGroup::$rules + $dependenciesRules;
+    }
+
+    protected function prepareForValidation()
+    {
+        $participants = $this->get('participants');
+
+        foreach ($participants as &$participant) {
+            $participant['phone'] = preg_replace('/[^0-9]/', '', $participant['phone']);
+        }
+
+        $this->merge(['participants' => $participants]);
     }
 }
