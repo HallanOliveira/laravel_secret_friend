@@ -20,14 +20,7 @@ class SortSecretFriendGroupService implements Service
 
     public function execute()
     {
-        if (! isset($this->secretFriendGroupDTO->participants)) {
-            throw new \Exception('Amigo secreto não possui participantes para realizar o sorteio.');
-        }
-
-        if (count($this->secretFriendGroupDTO->participants) < 2) {
-            throw new \Exception('Amigo secreto não possui participantes suficientes para realizar o sorteio.');
-        }
-
+        $this->validateParticipants();
         $participants = $this->secretFriendGroupDTO->participants;
         $result       = $this->sortSecretFriendProvider->execute($participants);
         if (! $this->validateResult($result)) {
@@ -47,6 +40,23 @@ class SortSecretFriendGroupService implements Service
         ]);
 
         return $participantUpdateds;
+    }
+
+    public function validateParticipants()
+    {
+        if (! isset($this->secretFriendGroupDTO->participants)) {
+            throw new \Exception('Amigo secreto não possui participantes para realizar o sorteio.');
+        }
+
+        if (count($this->secretFriendGroupDTO->participants) < 2) {
+            throw new \Exception('Amigo secreto não possui participantes suficientes para realizar o sorteio.');
+        }
+
+        foreach($this->secretFriendGroupDTO->participants as $participant) {
+            if (empty($participant->email)) {
+                throw new \Exception('Um ou mais participantes não possuem email.');
+            }
+        }
     }
 
     public function validateResult(array $result): bool

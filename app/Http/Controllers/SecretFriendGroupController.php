@@ -134,7 +134,7 @@ class SecretFriendGroupController extends AppBaseController
 
             if (! empty($payload['participants'])) {
                 foreach($payload['participants'] as $participant) {
-                    $participantsDTOs[$i++] = ParticipantDTO::create($participant);
+                    $participantsDTOs[$i++] = ParticipantDTO::create(array_filter($participant));
                 }
             }
 
