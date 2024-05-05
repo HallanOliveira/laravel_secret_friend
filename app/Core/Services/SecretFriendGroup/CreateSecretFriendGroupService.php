@@ -5,18 +5,19 @@ namespace App\Core\Services\SecretFriendGroup;
 use App\Core\Contracts\Service;
 use App\Core\Contracts\Repository;
 use App\Core\Contracts\DTO;
-use App\Core\Contracts\DBTransaction;
+use App\Core\Contracts\DBTransactionProvider;
 use App\Core\DTO\SecretFriendGroupDTO;
 use App\Core\Services\Participant\CreateManyParticipantService;
+use App\Core\Enums\SecretFriendStatusEnum;
 
 class CreateSecretFriendGroupService implements Service
 {
     public function __construct(
-        protected DTO           $dto,
-        protected Repository    $secretFriendRepository,
-        protected Repository    $participantRepository,
-        protected DBTransaction $DBTransaction,
-        protected int           $ownerId
+        protected DTO                   $dto,
+        protected Repository            $secretFriendRepository,
+        protected Repository            $participantRepository,
+        protected DBTransactionProvider $DBTransaction,
+        protected int                   $ownerId
     ) {
     }
 
@@ -30,8 +31,9 @@ class CreateSecretFriendGroupService implements Service
     {
         $this->DBTransaction::begin();
 
-        $secretFriendGroupArray             = $this->dto->toArray();
-        $secretFriendGroupArray['owner_id'] = $this->ownerId;
+        $secretFriendGroupArray              = $this->dto->toArray();
+        $secretFriendGroupArray['owner_id']  = $this->ownerId;
+        $secretFriendGroupArray['status_id'] = SecretFriendStatusEnum::Pendente->value;
 
         $secretFriendGroupCreated = $this->secretFriendRepository->create($secretFriendGroupArray);
         if (empty($secretFriendGroupCreated['id'])) {

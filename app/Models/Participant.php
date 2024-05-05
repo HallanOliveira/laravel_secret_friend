@@ -10,15 +10,18 @@ class Participant extends Model
 {
     use HasFactory, SoftDeletes;
 
-    public static $rules = [
-        'name'                   => 'required|string|max:150',
-        'owner_id'               => 'integer|exists:users,id',
-        'phone'                  => 'nullable|string|max:14',
-        'email'                  => 'nullable|email|max:150',
-        'suggestion'             => 'nullable|string|max:250',
-        'secret_friend_id'       => 'integer',
-        'secret_friend_group_id' => 'string|max:14',
-    ];
+    public static function getRules(): array
+    {
+        return [
+            'name'                   => 'required|string|max:150',
+            'owner_id'               => 'integer|exists:users,id',
+            'phone'                  => 'nullable|string|max:14',
+            'email'                  => 'nullable|email|max:150',
+            'suggestion'             => 'nullable|string|max:250',
+            'secret_friend_id'       => 'integer',
+            'secret_friend_group_id' => 'string|max:14',
+        ];
+    }
 
     protected $fillable = [
         'name',

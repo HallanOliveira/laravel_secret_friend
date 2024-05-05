@@ -13,20 +13,24 @@ use App\Core\Services\SecretFriendGroup\CreateSecretFriendGroupService;
 use App\Core\Services\SecretFriendGroup\UpdateSecretFriendGroupService;
 use App\Core\Services\SecretFriendGroup\ListSecretFriendGroupService;
 use App\Core\Services\SecretFriendGroup\DeleteSecretFriendGroupService;
+use App\Core\Services\SecretFriendGroup\SortSecretFriendGroupService;
 use App\Core\DTO\SecretFriendGroupDTO;
 use App\Core\DTO\UserDTO;
 use App\Core\DTO\ParticipantDTO;
 use Illuminate\Http\Request;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
-use App\Adapters\Providers\DBTransactionProvider;
+use App\Adapters\Providers\DBTransactionLaravel;
+use App\Adapters\Providers\SortRadomic;
+use App\Core\Enums\SecretFriendStatusEnum;
+use Illuminate\Http\JsonResponse;
 
 class SecretFriendGroupController extends AppBaseController
 {
     public function __construct(
         protected readonly SecretFriendGroupRepository $secretFriendGroupRepository,
         protected readonly ParticipantRepository       $participantRepository,
-        protected readonly DBTransactionProvider       $DBTransaction
+        protected readonly DBTransactionLaravel        $DBTransaction
     ) {
     }
 
@@ -197,6 +201,10 @@ class SecretFriendGroupController extends AppBaseController
     public function formUpdate(SecretFriendGroup $secretFriendGroup): RedirectResponse|View
     {
         try {
+            if ($secretFriendGroup->status_id === SecretFriendStatusEnum::Sorteado->value) {
+                throw new Exception('Não é possível editar um grupo de amigo secreto já sorteado.');
+            }
+
             $participantsDTOs = [];
             $i = 1;
             if (! empty($secretFriendGroup->participants)) {
@@ -216,5 +224,39 @@ class SecretFriendGroupController extends AppBaseController
         } catch (Exception $e) {
             return $this->redirectWithError($e->getMessage(), 'secretFriendGroups.index');
         }
+    }
+
+    /**
+     * Sort secret friend group
+     *
+     * @param SecretFriendGroup $secretFriendGroup
+     * @return RedirectResponse
+     */
+    public function sort(SecretFriendGroup $secretFriendGroup): JsonResponse
+    {
+        try {
+            $participantsDTOs = [];
+            $i = 1;
+            if (! empty($secretFriendGroup->participants)) {
+                $participantsArray = $secretFriendGroup->participants->toArray();
+                foreach($participantsArray as $participant) {
+                    $participantsDTOs[$i++] = ParticipantDTO::create(array_filter($participant));
+                }
+            }
+
+            $secretFriendGroupArray                 = $secretFriendGroup->toArray();
+            $secretFriendGroupArray['participants'] = $participantsDTOs;
+            $secretFriendGroupDTO                   = SecretFriendGroupDTO::create($secretFriendGroupArray);
+            $service                                = new SortSecretFriendGroupService(
+                $secretFriendGroupDTO,
+                new SortRadomic,
+                $this->participantRepository,
+                $this->secretFriendGroupRepository
+            );
+            $service->execute();
+        } catch (Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+        return response()->json(['message' => 'Sorteio realizado com sucesso! Cada participante recebeu um email com o seu amigo secreto!'], 200);
     }
 }

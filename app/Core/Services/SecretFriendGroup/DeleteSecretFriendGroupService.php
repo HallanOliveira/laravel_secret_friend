@@ -2,16 +2,17 @@
 
 namespace App\Core\Services\SecretFriendGroup;
 
-use App\Core\Contracts\DBTransaction;
+use App\Core\Contracts\DBTransactionProvider;
 use App\Core\Contracts\Repository;
+use App\Core\Contracts\Service;
 
-class DeleteSecretFriendGroupService
+class DeleteSecretFriendGroupService implements Service
 {
     public function __construct(
-        protected readonly int            $id,
-        protected readonly DBTransaction  $DBTransaction,
-        protected readonly Repository     $secretFriendGroupRepository,
-        protected readonly Repository     $participantRepository
+        protected readonly int                   $id,
+        protected readonly DBTransactionProvider $DBTransaction,
+        protected readonly Repository            $secretFriendGroupRepository,
+        protected readonly Repository            $participantRepository
     ) {
     }
 

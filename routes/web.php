@@ -27,11 +27,11 @@ Route::middleware('auth')->group(function () {
     Route::controller(SecretFriendGroupController::class)->group(function () {
         Route::get('/secretFriendGroups/formCreate','formCreate')->name('secretFriendGroups.formCreate');
         Route::get('/secretFriendGroups/{secretFriendGroup}/formUpdate','formUpdate')->name('secretFriendGroups.formUpdate');
+        Route::post('/secretFriendGroups/{secretFriendGroup}/sort', 'sort')->name('sort');
         Route::get('/home', 'index')->name('home');
     });
 
     Route::resource('/secretFriendGroups', SecretFriendGroupController::class);
-
 });
 
 Route::get('/', [IndexController::class, 'welcome'])->name('welcome');

@@ -53,6 +53,7 @@ class SecretFriendGroupRepository implements Repository
     {
         $data = $this->model
             ->where('owner_id', auth()->id())
+            ->with('participants')
             ->orderBy('id', 'desc')
             ->get();
         return $data->toArray();

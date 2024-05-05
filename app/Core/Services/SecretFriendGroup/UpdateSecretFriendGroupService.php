@@ -5,19 +5,19 @@ namespace App\Core\Services\SecretFriendGroup;
 use App\Core\Contracts\Service;
 use App\Core\Contracts\Repository;
 use App\Core\Contracts\DTO;
-use App\Core\Contracts\DBTransaction;
-use App\Core\DTO\SecretFriendGroupDTO;
+use App\Core\Contracts\DBTransactionProvider;
 use App\Core\Services\Participant\CreateManyParticipantService;
+use App\Core\DTO\SecretFriendGroupDTO;
 
 class UpdateSecretFriendGroupService implements Service
 {
     protected array $currentParticipants = [];
 
     public function __construct(
-        protected DTO                          $dto,
-        protected Repository                   $secretFriendRepository,
-        protected Repository                   $participantRepository,
-        protected DBTransaction                $DBTransaction
+        protected DTO                   $dto,
+        protected Repository            $secretFriendRepository,
+        protected Repository            $participantRepository,
+        protected DBTransactionProvider $DBTransaction
     ) {
         $this->currentParticipants = $this->getCurrentParticipants();
     }

@@ -10,6 +10,7 @@ class SecretFriendGroupDTO implements DTO
 {
     public readonly int     $id;
     public readonly int     $owner_id;
+    public readonly int     $status_id;
     public readonly string  $name;
     public readonly string  $reveal_date;
     public readonly string  $reveal_location;

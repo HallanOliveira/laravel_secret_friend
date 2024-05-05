@@ -2,10 +2,10 @@
 
 namespace App\Adapters\Providers;
 
-use App\Core\Contracts\DBTransaction;
+use App\Core\Contracts\DBTransactionProvider;
 use Illuminate\Support\Facades\DB;
 
-class DBTransactionProvider implements DBTransaction
+class DBTransactionLaravel implements DBTransactionProvider
 {
     public static function begin()
     {

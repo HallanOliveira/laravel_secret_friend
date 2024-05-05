@@ -2,7 +2,7 @@
 
 namespace App\Core\Contracts;
 
-interface DBTransaction {
+interface DBTransactionProvider {
 
     public static function begin();
 

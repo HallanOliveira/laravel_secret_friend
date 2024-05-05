@@ -26,9 +26,24 @@ class CreateSecretFriendRequest extends FormRequest
     public function rules()
     {
         $dependenciesRules = [];
-        foreach (Participant::$rules as $key => $rule) {
+        foreach (Participant::getRules() as $key => $rule) {
             $dependenciesRules["participants.*.$key"] = 'sometimes|'.$rule;
         }
-        return SecretFriendGroup::$rules + $dependenciesRules;
+        return SecretFriendGroup::getRules() + $dependenciesRules;
+    }
+
+    protected function prepareForValidation()
+    {
+        if (! $this->has('participants')) {
+            return;
+        }
+
+        $participants = $this->get('participants');
+
+        foreach ($participants as &$participant) {
+            $participant['phone'] = preg_replace('/[^0-9]/', '', $participant['phone']);
+        }
+
+        $this->merge(['participants' => $participants]);
     }
 }
