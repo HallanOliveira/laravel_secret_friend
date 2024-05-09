@@ -17,13 +17,16 @@ use App\Core\Services\SecretFriendGroup\SortSecretFriendGroupService;
 use App\Core\DTO\SecretFriendGroupDTO;
 use App\Core\DTO\UserDTO;
 use App\Core\DTO\ParticipantDTO;
+use App\Adapters\Providers\EmailLaravel;
+use App\Adapters\Providers\DBTransactionLaravel;
+use App\Adapters\Providers\SortRadomic;
+use App\Mail\SecretFriendSortEmail;
 use Illuminate\Http\Request;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
-use App\Adapters\Providers\DBTransactionLaravel;
-use App\Adapters\Providers\SortRadomic;
 use App\Core\Enums\SecretFriendStatusEnum;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\DB;
 
 class SecretFriendGroupController extends AppBaseController
 {
@@ -230,11 +233,12 @@ class SecretFriendGroupController extends AppBaseController
      * Sort secret friend group
      *
      * @param SecretFriendGroup $secretFriendGroup
-     * @return RedirectResponse
+     * @return JsonResponse
      */
     public function sort(SecretFriendGroup $secretFriendGroup): JsonResponse
     {
         try {
+            DB::beginTransaction();
             $participantsDTOs = [];
             $i = 1;
             if (! empty($secretFriendGroup->participants)) {
@@ -247,16 +251,19 @@ class SecretFriendGroupController extends AppBaseController
             $secretFriendGroupArray                 = $secretFriendGroup->toArray();
             $secretFriendGroupArray['participants'] = $participantsDTOs;
             $secretFriendGroupDTO                   = SecretFriendGroupDTO::create($secretFriendGroupArray);
-            $service                                = new SortSecretFriendGroupService(
+            $sortService                            = new SortSecretFriendGroupService(
                 $secretFriendGroupDTO,
                 new SortRadomic,
                 $this->participantRepository,
-                $this->secretFriendGroupRepository
+                $this->secretFriendGroupRepository,
+                new EmailLaravel(new SecretFriendSortEmail)
             );
-            $service->execute();
+            $sortService->execute();
         } catch (Exception $e) {
+            DB::rollback();
             return response()->json(['error' => $e->getMessage()], 500);
         }
+        DB::commit();
         return response()->json(['message' => 'Sorteio realizado com sucesso! Cada participante recebeu um email com o seu amigo secreto!'], 200);
     }
 }

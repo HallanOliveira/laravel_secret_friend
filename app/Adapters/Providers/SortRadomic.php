@@ -12,27 +12,18 @@ class SortRadomic implements SortSecretFriendProvider
      */
     public function execute(array $participants): array
     {
-        $idsArr        = $this->getParticipantsIds($participants);
         $alreadySorted = [];
         $result        = [];
-
-        foreach ($idsArr as $participantId) {
+        foreach ($participants as $participant) {
             do {
-                $sort = rand(0, (count($participants) - 1));
-            } while ($idsArr[$sort] === $participantId || in_array($sort, $alreadySorted));
-            $alreadySorted[]        = $sort;
-            $result[$participantId] = $idsArr[$sort];
+                $sort = rand(1, (count($participants)));
+            } while ($participants[$sort]->id === $participant->id || in_array($sort, $alreadySorted));
+            $alreadySorted[] = $sort;
+            $result[$participant->id] = [
+                'id'   => $participants[$sort]->id,
+                'name' => $participants[$sort]->name
+            ];
         }
         return $result;
-    }
-
-    private function getParticipantsIds(array $participantsDTOs): array
-    {
-        $ids = [];
-        foreach ($participantsDTOs as $participant) {
-            $ids[] = $participant->id;
-        }
-
-        return $ids;
     }
 }

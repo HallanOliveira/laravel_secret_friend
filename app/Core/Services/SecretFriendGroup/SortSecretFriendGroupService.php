@@ -2,6 +2,7 @@
 
 namespace App\Core\Services\SecretFriendGroup;
 
+use App\Core\Contracts\EmailProvider;
 use App\Core\Contracts\Repository;
 use App\Core\Contracts\Service;
 use App\Core\Contracts\SortSecretFriendProvider;
@@ -15,9 +16,16 @@ class SortSecretFriendGroupService implements Service
         protected SortSecretFriendProvider $sortSecretFriendProvider,
         protected Repository               $participantRepository,
         protected Repository               $secretFriendGroupRepository,
+        protected EmailProvider            $emailProvider
     ) {
     }
 
+    /**
+     * Execute the service
+     *
+     * @return array
+     * @throws \Exception
+     */
     public function execute()
     {
         $this->validateParticipants();
@@ -29,7 +37,7 @@ class SortSecretFriendGroupService implements Service
 
         $participantUpdateds = [];
         foreach($participants as $participant) {
-            $secretFriendId        = $result[$participant->id];
+            $secretFriendId        = $result[$participant->id]['id'];
             $participantUpdateds[] = $this->participantRepository->update($participant->id, [
                 'secret_friend_id' => $secretFriendId
             ]);
@@ -39,9 +47,17 @@ class SortSecretFriendGroupService implements Service
             'status_id' => SecretFriendStatusEnum::Sorteado->value
         ]);
 
+        $this->sendResultByEmail($participantUpdateds, $result);
+
         return $participantUpdateds;
     }
 
+    /**
+     * Validate the participants of the secret friend group
+     *
+     * @return void
+     * @throws \Exception
+     */
     public function validateParticipants()
     {
         if (! isset($this->secretFriendGroupDTO->participants)) {
@@ -59,6 +75,12 @@ class SortSecretFriendGroupService implements Service
         }
     }
 
+    /**
+     * Validate the result of the secret friend
+     *
+     * @param array $result
+     * @return bool
+     */
     public function validateResult(array $result): bool
     {
         $participantsIds = [];
@@ -66,17 +88,45 @@ class SortSecretFriendGroupService implements Service
             $participantsIds[] = $participant->id;
         }
 
-        foreach ($result as $participantId => $secretFriendId) {
+        foreach ($result as $participantId => $secretFriend) {
             if (
                 ! in_array($participantId, $participantsIds)
-                || ! in_array($secretFriendId, $participantsIds)
-                || $participantId === $secretFriendId
+                || ! in_array($secretFriend['id'], $participantsIds)
+                || $participantId === $secretFriend['id']
             ) {
                 return false;
             }
         }
-
         return true;
     }
 
+    /**
+     * Send email to participants with the result of the secret friend draw
+     *
+     * @param array $participants
+     * @param array $result
+     * @return void
+     * @throws \Exception
+     */
+    public function sendResultByEmail($participants, $result)
+    {
+        if (empty($participants)) {
+            throw new \Exception('Não foi possível enviar o email, pois não foram encontrados os participantes do grupo.');
+        }
+
+        foreach ($participants as $participant) {
+            $emailResponse = $this->emailProvider
+                ->with((object)[
+                    'group_name'         => $this->secretFriendGroupDTO->name,
+                    'participant_name'   => $participant['name'],
+                    'secret_friend_name' => $result[$participant['id']]['name'],
+                    'reveal_date'        => formatDate($this->secretFriendGroupDTO->reveal_date),
+                    'reveal_location'    => $this->secretFriendGroupDTO->reveal_location
+                ])
+                ->send($participant['email'], 'Amigo Secreto Sorteado');
+            if (! $emailResponse) {
+                throw new \Exception('Ocorreu um erro ao enviar o email para o participante ' . $participant['name']);
+            }
+        }
+    }
 }
