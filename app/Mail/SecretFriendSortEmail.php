@@ -34,7 +34,7 @@ class SecretFriendSortEmail extends Mailable
     public function envelope()
     {
         return new Envelope(
-            subject: 'Secret Friend Sort Email',
+            subject: 'Amigo Secreto Sorteado! 🎅🎁',
         );
     }
 
