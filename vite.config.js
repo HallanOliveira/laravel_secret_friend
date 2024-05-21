@@ -13,7 +13,8 @@ export default defineConfig({
             input: [
                 'resources/js/app.js',
                 'resources/sass/app.scss',
-                'resources/js/secretFriendGroup/script.js',
+                'resources/js/secretFriendGroup/index.js',
+                'resources/js/participant/form.js'
             ],
             refresh: true,
         }),
