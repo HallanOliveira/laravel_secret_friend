@@ -21,7 +21,7 @@
                             <span class="badge bg-secondary">Processando</span>
                             @break
                         @case(3)
-                            <span class="badge bg-success">Sorteio concluído</span>
+                            <span class="badge bg-success">Concluído</span>
                             @break
                         @default
                             <span class="badge bg-danger">Erro</span>
