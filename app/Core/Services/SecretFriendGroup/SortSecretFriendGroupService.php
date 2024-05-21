@@ -8,6 +8,7 @@ use App\Core\Contracts\Service;
 use App\Core\Contracts\SortSecretFriendProvider;
 use App\Core\DTO\SecretFriendGroupDTO;
 use App\Core\Enums\SecretFriendStatusEnum;
+use App\Mail\SecretFriendSortEmail;
 
 class SortSecretFriendGroupService implements Service
 {
@@ -15,8 +16,7 @@ class SortSecretFriendGroupService implements Service
         protected SecretFriendGroupDTO     $secretFriendGroupDTO,
         protected SortSecretFriendProvider $sortSecretFriendProvider,
         protected Repository               $participantRepository,
-        protected Repository               $secretFriendGroupRepository,
-        protected EmailProvider            $emailProvider
+        protected Repository               $secretFriendGroupRepository
     ) {
     }
 
@@ -115,7 +115,10 @@ class SortSecretFriendGroupService implements Service
         }
 
         foreach ($participants as $participant) {
-            $emailResponse = $this->emailProvider
+            $emailProvider = app(EmailProvider::class, [
+                'mailable' => app(SecretFriendSortEmail::class)
+            ]);
+            $emailResponse = $emailProvider
                 ->with((object)[
                     'group_name'         => $this->secretFriendGroupDTO->name,
                     'participant_name'   => $participant['name'],

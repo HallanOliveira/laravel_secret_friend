@@ -255,8 +255,7 @@ class SecretFriendGroupController extends AppBaseController
                 $secretFriendGroupDTO,
                 new SortRadomic,
                 $this->participantRepository,
-                $this->secretFriendGroupRepository,
-                new EmailLaravel(new SecretFriendSortEmail)
+                $this->secretFriendGroupRepository
             );
             $sortService->execute();
         } catch (Exception $e) {
